@@ -1,0 +1,5 @@
+*.o
+*.user
+*.c2f81bb
+Makefile*
+build*
