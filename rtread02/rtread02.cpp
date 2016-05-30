@@ -95,14 +95,14 @@ int main(int argc, char* argv[])
 
   program_name = argv[0];
 
-  printf("RTREAD. \nInfoTeCS. Special Research Lab.\n"
-         "\nReading hex-codes from Rutoken\n\n");
+  printf("RTREAD v.2.0. \nInfoTeCS. Special Research Lab.\n"
+         "\nReading hex-codes from Rutoken.\n\n");
 
   if (argc>1) c = argv[1]; else
   {
-    printf("Usage: %s reader hex-code\n\n"
-           "Examples:\n\t %s Gemplus 55\n"
-           "\t %s \"ron SIM Re\" 00\n"
+    printf("Usage: %s reader hex-code length(1-250 bytes)\n\n"
+           "Examples:\n\t %s Rutoken 55 1\n"
+           "\t %s Rutoken 00 250\n"
            "\n", program_name, program_name, program_name);
     c=sc_listreaders();
     if (c)
@@ -116,9 +116,22 @@ int main(int argc, char* argv[])
     return 0;
   }
 
+  int len = 250;
+
   if (argc>2)
   {
     code = strtol(argv[2],NULL,16);
+  }
+
+  if (argc>3)
+  {
+    len = strtol(argv[3],NULL,10);
+  }
+
+  if (len > 250)
+  {
+      printf("Length of block in bytes must be from 1 to 250.\n");
+      return 0;
   }
 
   printf("* connecting to \"%s\" - ", c);
@@ -139,7 +152,7 @@ int main(int argc, char* argv[])
 	// Create test EF
 	DWORD fid = 0x0015; // Any simple name
 
-	int len = 250;
+
 	rc = sc_createfile (&ctx, fid, len);
 	// rc = sc_viewfileattrib (&ctx, did, fid );
 
@@ -152,10 +165,10 @@ int main(int argc, char* argv[])
 	// Write test codes to EF
 	rc = sc_updatedata (&ctx, dat, len, offs);
 
-	printf ("\nWrtiting hex-code '%02x' to smart card\nrc = %2x\n", code, rc);
+    printf ("\nWrtiting block length = %d bytes of hex-code '%02x' to smart card.\nrc = %2x\n", len, code, rc);
 
-    printf ("\nReading hex-code '%02x' from smart card.\n", code);
-    printf ("Press any key for exit.\n ", code);
+    printf ("\nReading block length = %d bytes of hex-code '%02x' from smart card.\n", len, code);
+    printf ("Press any key for exit.\n", code);
 
 	k = 0;
 
