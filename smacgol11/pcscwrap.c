@@ -610,7 +610,7 @@ LONG sc_verify_u (sc_context *ctx)
 		int i;
 	#endif
 	
-	BYTE vrfu[] = "\x00\x20\x00\x02\x08"
+    BYTE vrfu[] = "\x00\x20\x00\x02\x08"
 				  "\x31\x32\x33\x34\x35\x36\x37\x38";
 
 	int sz = sizeof(vrfu) - 1;

@@ -22,7 +22,7 @@ int main()
 {
   sc_context ctx = {0}; 
   long rc;
-  char *c = "Aktiv Rutoken lite 0";
+  char *c = "Aladdin";
   unsigned short dir[256] = {0x3f00};
   WORD MF = 0x3f00;
   BYTE *buf, *dat;
@@ -34,13 +34,13 @@ int main()
     printf("ok\n* Active reader: \"%s\"\n", ctx.rdr);
  
 	// Logon on user
-	rc = sc_verify_u(&ctx);
+    rc = sc_verify_u(&ctx);
 	// Select root dir MF
 	rc = sc_selectfile(&ctx, MF);
 	
 	// Create and select DF for test files	
 	DWORD did = 0x00a9;
-	rc = sc_createdir (&ctx, did);
+    rc = cr_d_42 (&ctx, did);
 	
 	rc = sc_selectfile(&ctx, MF);
 	rc = sc_selectfile(&ctx, did);
