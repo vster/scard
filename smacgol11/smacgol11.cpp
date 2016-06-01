@@ -10,7 +10,7 @@
 
 #define MAX_MEMBUF 0xFFFF
 
-// #define _DEBUG_ 1
+#define _DEBUG_ 1
 
 static unsigned short dir[256] = {0};
 static unsigned int  idr = 0;
@@ -40,7 +40,7 @@ int main()
 	
 	// Create and select DF for test files	
 	DWORD did = 0x00a9;
-    rc = cr_d_42 (&ctx, did);
+    rc = sc_createdir (&ctx, did);
 	
 	rc = sc_selectfile(&ctx, MF);
 	rc = sc_selectfile(&ctx, did);
@@ -60,7 +60,7 @@ int main()
 	rc = sc_updatedata (&ctx, dat, len, offs);
 
 	// Read test codes
-	for (int i = 0; i < 10; i++)
+    for (int i = 0; i < 3; i++)
 		rc = sc_readdata (&ctx, len, offs);
 	
 	

@@ -29,7 +29,7 @@
                          SCARD_PROTOCOL_RAW |  \
                          SCARD_PROTOCOL_OPTIMAL
 
-// #define _DEBUG_
+#define _DEBUG_ 1
 
 /* -------------------------------------------------------------------------  */
 char *sc_listreaders(void)
@@ -210,6 +210,7 @@ LONG sc_selectfile (sc_context *ctx, DWORD fID)
   LONG rc=SCARD_S_SUCCESS;
   DWORD dw=sizeof(ctx->sw);
   BYTE *buf= ctx->sw;
+  int i;
 
   buf[0]=ctx->CLA; ctx->lCLA=buf[0];
   buf[1] = 0xa4; buf[2] = buf[3] = buf[6] = 0; buf[4] = 2; buf[5] = 0x3f;
@@ -221,6 +222,13 @@ LONG sc_selectfile (sc_context *ctx, DWORD fID)
   rc=SCardTransmit(ctx->hCard, ctx->proto, buf, 7, NULL, ctx->sw, &dw);
 
   ctx->rw = ctx->sw[0]*256 + ctx->sw[1];
+
+#if _DEBUG_
+  printf("READ FILE DATA Length %d\n", dw);
+  for(i=0;i<dw;i++)
+    printf("%02X ",buf[i]);
+  printf("\n");
+#endif
 
   return ctx->rw;
 } /* sc_selectfile */
