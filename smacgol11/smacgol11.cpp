@@ -53,7 +53,7 @@ int main()
 
 	dat = (BYTE *) malloc(len);
 	DWORD offs = 0;
-	BYTE code = 0x11; // Test code
+    BYTE code = 0x55; // Test code
 	for (int i = 0; i < len; i++)
 		dat[i] = code;
 	// Write test codes to EF

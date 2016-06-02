@@ -125,7 +125,8 @@ LONG sc_init (sc_context *ctx, char *rdr)
            { 
                ctx->rdr = NULL; 
                ctx->rdrsz = SCARD_AUTOALLOCATE;
-               ctx->CLA = 0;
+               // ctx->CLA = 0;
+               ctx->CLA = 0x80;
                ctx->proto = SCARD_PCI_T0; 
                ctx->rw = 0;
                rc=SCardConnect(ctx->hCtx, cc, SCARD_SHARE_SHARED, 
@@ -418,7 +419,8 @@ int i;
   //
   // APDU GET CHALLENGE
   //
-  buf[0] = 0; buf[1] = 0x84; buf[2] = 0; buf[3] = 0; buf[4] = (BYTE)len&0xff;
+  buf[0]=ctx->CLA; ctx->lCLA=buf[0];
+  buf[1] = 0x84; buf[2] = 0; buf[3] = 0; buf[4] = (BYTE)len&0xff;
   //  
   rc=SCardTransmit(ctx->hCard, ctx->proto, buf, 5, NULL, ctx->sw, &dw);
   ctx->rw = (unsigned short)sc_get_status( buf, dw );
@@ -463,7 +465,7 @@ int i;
       */
   
   memcpy(buf,crf,sizeof(crf));
-  
+  buf[0]=ctx->CLA; ctx->lCLA=buf[0];
   buf[ 9]=(len>>8)&0xff;buf[10]=len&0xff;
   buf[18]=(id >>8)&0xff;buf[19]=id &0xff;
   // if(pri)
@@ -507,6 +509,7 @@ BYTE crd[]=// TAG 83 - file name, 86 - ACL
            "\x86\x09\xFF\x01\x01\xFF\xFF\x01\x01\x01\xFF";
   //
   memcpy(buf,crd,sizeof(crd));
+  buf[0]=ctx->CLA; ctx->lCLA=buf[0];
   buf[18]=(id >>8)&0xff;
   buf[19]= id     &0xff;
   //
@@ -545,6 +548,7 @@ int i;
              "\x86\x09\x00\x01\x01\xFF\xFF\x01\x01\x01\xFF";
   //
   memcpy(buf,crf,sizeof(crf));
+  buf[0]=ctx->CLA; ctx->lCLA=buf[0];
   buf[ 9]=(len>>8)&0xff;buf[10]=len&0xff;
   buf[16]=(id >>8)&0xff;buf[17]=id &0xff;
   if(pri)
@@ -587,6 +591,7 @@ BYTE crd[]=// TAG 83 - file name, 86 - ACL
            "\x86\x09\xFF\x01\x01\xFF\xFF\x01\x01\x01\xFF";
   //
   memcpy(buf,crd,sizeof(crd));
+  buf[0]=ctx->CLA; ctx->lCLA=buf[0];
   buf[16]=(id >>8)&0xff;
   buf[17]= id     &0xff;
   //
@@ -623,7 +628,8 @@ LONG sc_verify_u (sc_context *ctx)
 
 	int sz = sizeof(vrfu) - 1;
 	memcpy(buf,vrfu,sz);
-	#if _DEBUG_
+    buf[0]=ctx->CLA; ctx->lCLA=buf[0];
+    #if _DEBUG_
 		printf("\nVERIFY USER\n");
 		for(i=0;i<sz;i++)
 			printf("%02X ",buf[i]);
@@ -648,11 +654,12 @@ LONG sc_reset_u (sc_context *ctx)
 	#if _DEBUG_
 		int i;
 	#endif
-	
-	BYTE rstu[] = "\x80\x40\x00\x02";
+
+    BYTE rstu[] = "\x00\x40\x00\x02";
 	
 	int sz = sizeof(rstu)-1;
 	memcpy(buf,rstu,sz);
+    buf[0]=ctx->CLA; ctx->lCLA=buf[0];
 	#if _DEBUG_
 		printf("\nRESET ACCESS RIGHTS USER\n");
 		for(i=0;i<sz;i++)
@@ -676,10 +683,11 @@ LONG sc_verify_a (sc_context *ctx)
 	DWORD dw=sizeof(ctx->sw);
 	BYTE *buf= ctx->sw;
 	
-	BYTE vrfa[] = "\x00\x20\x00\x01\x08"
+    BYTE vrfa[] = "\x00\x20\x00\x01\x08"
 				  "\x38\x37\x36\x35\x34\x33\x32\x31";
 
 	int sz = sizeof(vrfa) - 1;
+    buf[0]=ctx->CLA; ctx->lCLA=buf[0];
 	memcpy(buf,vrfa,sz);
 	
     rc = SCardTransmit(ctx->hCard, ctx->proto, buf, sz, NULL, ctx->sw, &dw);
@@ -697,9 +705,10 @@ LONG sc_reset_a (sc_context *ctx)
 		int i;
 	#endif
 	
-	BYTE rsta[] = "\x80\x40\x00\x01";
+    BYTE rsta[] = "\x00\x40\x00\x01";
 	
 	int sz = sizeof(rsta)-1;
+    buf[0]=ctx->CLA; ctx->lCLA=buf[0];
 	memcpy(buf,rsta,sz);
 	
     rc = SCardTransmit(ctx->hCard, ctx->proto, buf, sz, NULL, ctx->sw, &dw);
@@ -728,6 +737,7 @@ BYTE crd[]=// TAG 83 - file name, 86 - ACL
   
   int sz = sizeof(crd) - 1;
   memcpy(buf,crd,sz);
+  buf[0]=ctx->CLA; ctx->lCLA=buf[0];
   buf[17]=(id >>8)&0xff;
   buf[18]= id     &0xff;
   //
@@ -768,6 +778,7 @@ int i;
   
   int sz = sizeof(crf) - 1;
   memcpy(buf,crf,sz);
+  buf[0]=ctx->CLA; ctx->lCLA=buf[0];
   buf[ 9]=(len>>8)&0xff;buf[10]=len&0xff;
   buf[17]=(id >>8)&0xff;buf[18]=id &0xff;
 
@@ -804,11 +815,12 @@ sc_viewfileattrib (sc_context *ctx, DWORD did, DWORD fid  )
 		int i;
 	#endif
 	
-	BYTE vfa[] = "\x00\xa4\x08\x00"
+    BYTE vfa[] = "\x00\xa4\x08\x00"
 				 "\x04\x00\x00\x00\x00\xff";
 
 	int sz = sizeof(vfa)-1;
 	memcpy(buf,vfa,sz);
+    buf[0]=ctx->CLA; ctx->lCLA=buf[0];
 	buf[5]=(did >>8)&0xff;buf[6]=did &0xff;
 	buf[7]=(fid >>8)&0xff;buf[8]=fid &0xff;
 	
@@ -860,6 +872,7 @@ sc_deletefile (sc_context *ctx, DWORD fid )
 
 	int sz = sizeof(df)-1;
 	memcpy(buf,df,sz);
+    buf[0]=ctx->CLA; ctx->lCLA=buf[0];
 	buf[5]=(fid >>8)&0xff;buf[6]=fid &0xff;
 	
 #if _DEBUG_

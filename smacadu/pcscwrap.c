@@ -125,7 +125,7 @@ LONG sc_init (sc_context *ctx, char *rdr)
            {
                ctx->rdr = NULL;
                ctx->rdrsz = SCARD_AUTOALLOCATE;
-               ctx->CLA = 0;
+               ctx->CLA = 0x80;
                ctx->proto = SCARD_PCI_T0;
                ctx->rw = 0;
                rc=SCardConnect(ctx->hCtx, cc, SCARD_SHARE_SHARED,

@@ -64,8 +64,8 @@ int main(int argc, char *argv[])
 	unsigned int i;
 	const SCARD_IO_REQUEST *pioSendPci;
 	SCARD_IO_REQUEST pioRecvPci;
-	BYTE pbRecvBuffer[10];
-	BYTE pbSendBuffer[] = { 0x00, 0xA4, 0x00, 0x00, 0x02, 0x3F, 0x00 };
+    BYTE pbRecvBuffer[10];
+    BYTE pbSendBuffer[] = { 0x80, 0xA4, 0x00, 0x00, 0x02, 0x3F, 0x00 };
 	DWORD dwSendLength, dwRecvLength;
 
 	printf("PC/SC sample code\n");

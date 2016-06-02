@@ -54,7 +54,8 @@ int main(int argc, char* argv[])
 
   if (argc>2)
   {
-    a = strtok(argv[2], "/\\");
+     a = strtok(argv[2], "/\\");
+     // a = strtok(argv[2], "/\\");
     while (a != NULL)
     {
       dir[idr++] = (unsigned short) strtoul(a, NULL, 16);
